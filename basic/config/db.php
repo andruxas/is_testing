@@ -2,5 +2,5 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'sqlite:/var/www/yii/db.sqlite'
+    'dsn' => 'sqlite:/var/www/yii/www/basic/db.sqlite'
 ];
