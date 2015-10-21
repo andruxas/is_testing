@@ -46,3 +46,5 @@ class Rate extends \yii\db\ActiveRecord
         ];
     }
 }
+
+

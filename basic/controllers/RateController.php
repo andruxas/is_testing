@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * RateController implements the CRUD actions for Rate model.
@@ -30,6 +31,7 @@ class RateController extends Controller
      * Lists all Rate models.
      * @return mixed
      */
+	 /*
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
@@ -39,7 +41,45 @@ class RateController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
+    }*/
+	
+public function actionIndex()
+{
+    $searchModel = new Rate;
+	$dataProvider = new ActiveDataProvider(['query' => Rate::find()]);
+ 
+    if (Yii::$app->request->post('hasEditable')) {
+
+        $itemID= Yii::$app->request->post('editableKey');
+        $model = Rate::findOne($itemID);
+ 
+        $out = Json::encode(['output'=>'', 'message'=>'']);
+ 
+        $post = [];
+        $posted = current($_POST['Rate']);
+        $post['Rate'] = $posted;
+ 
+        if ($model->load($post)) {
+            $model->save();
+ 
+            $output = '';
+            if (isset($posted['Rate'])) {
+               $output =  Yii::$app->formatter->asDecimal($model->speed, 1);
+            } 
+ 
+            $out = Json::encode(['output'=>$output, 'message'=>'']);
+        } 
+
+        echo $out;
+        return;
     }
+ 
+    // non-ajax - render the grid by default
+    return $this->render('index', [
+        'dataProvider' => $dataProvider,
+    ]);
+}	
+	
 
     /**
      * Displays a single Rate model.
@@ -89,6 +129,21 @@ class RateController extends Controller
             ]);
         }
     }
+	
+    public function actionField() {
+        if (isset($_POST['field'])) {
+            $field = $_POST['field'];
+            if (isset($_POST['id'])) {
+                $model = CActiveRecord::model($this->modelName)->resetScope()->findByPk($_POST['id']);
+                if ($model != null) {
+                    $model->$field = $_POST['value'];
+                    $model->save();
+                    Yii::app()->end();
+                }
+            }
+        }
+    }	
+	
 
     /**
      * Deletes an existing Rate model.

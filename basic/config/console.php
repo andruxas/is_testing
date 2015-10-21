@@ -16,8 +16,10 @@ return [
 			'class'=>'system.gii.GiiModule',
 			'password'=>'1',
 			'allowedIPs' => ['127.0.0.1', '192.168.1.25', '91.208.134.254', '*', '::1'] // adjust this to your needs
-		)
-		
+		),
+	   'gridview' =>  [
+			'class' => '\kartik\grid\Module'
+		]		
 	],
     'components' => [
         'cache' => [
